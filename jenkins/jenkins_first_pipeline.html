@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CI/CD Pipeline in Jenkins — Interactive Guide</title>
+<style>
+:root{--bg:#07111f;--card:#0e1b2d;--card2:#13263d;--text:#edf7ff;--muted:#9db0c7;--cyan:#19c3ff;--purple:#795cff;--border:#263b52;--green:#28d795}
+*{box-sizing:border-box;scroll-behavior:smooth}html,body{max-width:100%;overflow-x:hidden}body{margin:0;background:radial-gradient(circle at 15% 0%,#0c2940 0,transparent 30%),radial-gradient(circle at 90% 10%,#21183f 0,transparent 30%),var(--bg);color:var(--text);font:16px/1.7 "Segoe UI",Arial,sans-serif}
+header{padding:55px 20px 42px;text-align:center;border-bottom:1px solid var(--border)}.badge{display:inline-block;border:1px solid #2f9cc1;border-radius:999px;padding:6px 12px;color:#9ceaff;font-size:12px;font-weight:800;letter-spacing:.1em}h1{font-size:clamp(2rem,5vw,4rem);line-height:1.05;margin:15px 0 8px}header p{color:var(--muted);max-width:760px;margin:auto}
+.toolbar{position:sticky;top:0;z-index:20;padding:10px;display:flex;gap:9px;justify-content:center;flex-wrap:wrap;background:#07111fcc;backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}input,button{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:9px;padding:9px 12px}input{width:min(360px,82vw)}button{cursor:pointer}button:hover{border-color:var(--cyan)}
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:99;background:#13263d}.progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple))}
+.layout{width:100%;max-width:none;margin:18px 0;padding:0 14px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px}aside,.hero,.step,.finish{background:#0e1b2de8;border:1px solid var(--border);border-radius:17px;box-shadow:0 12px 35px #0003}aside{position:sticky;top:10px;height:max-content;max-height:calc(100vh - 20px);overflow:auto;padding:14px}aside h3{margin-top:0}.nav a{display:block;text-decoration:none;color:var(--muted);padding:7px 9px;border-radius:8px;font-size:14px}.nav a:hover,.nav a.active{background:#19c3ff12;color:#bcefff}
+.hero{padding:20px;margin-bottom:14px}.hero h2{margin-top:0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}.stat{background:var(--card2);border:1px solid var(--border);padding:13px;border-radius:12px}.stat b{font-size:22px;display:block}.stat small{color:var(--muted)}
+.step{padding:20px;margin-bottom:14px;scroll-margin-top:75px}.step h2{font-size:1.35rem;display:flex;gap:12px;align-items:center}.step h2 span{font-size:11px;background:linear-gradient(135deg,var(--cyan),var(--purple));padding:5px 8px;border-radius:7px}li,p{color:#c9d7e7}figure{margin:16px 0;padding:8px;text-align:center;background:#050c15;border:1px dashed #39526b;border-radius:12px}figure img{max-width:100%;max-height:520px;object-fit:contain;border-radius:8px;cursor:zoom-in}figure img+img{margin-left:8px}details{border:1px solid var(--border);border-radius:11px;padding:12px;margin-top:14px}summary{cursor:pointer;font-weight:700}.code{position:relative}pre{overflow:auto;background:#050b14;border-left:4px solid var(--cyan);padding:18px;border-radius:10px;font-size:13px}.code button{position:absolute;right:8px;top:8px;font-size:12px}.hidden{display:none}.finish{padding:21px;text-align:center;color:#7ff0c1;border-color:#28d79555;margin:22px 0 50px}
+#zoom{display:none;position:fixed;inset:0;background:#000e;z-index:100;align-items:center;justify-content:center;padding:20px}#zoom.show{display:flex}#zoom img{max-width:95vw;max-height:90vh;border-radius:10px}#zoom button{position:absolute;right:18px;top:18px}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.layout main{min-width:0}aside{position:relative;top:auto;max-height:none}.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:550px){.layout{padding:0 10px}.stats{grid-template-columns:1fr}.step{padding:16px}.hero{padding:16px}header{padding:38px 14px 30px}}.step{padding:18px}}
+</style></head><body>
+<div class="progress"><i id="bar"></i></div>
+<header><div class="badge">JENKINS GUIDE</div><h1>CI/CD Pipeline in Jenkins</h1><p>A simple, step-by-step guide to setting up and running a Jenkins CI/CD pipeline.</p></header>
+<!--<div class="toolbar"><input id="search" placeholder="Search steps, Git, Jenkinsfile, build…"><button onclick="toggleDetails(true)">Expand all</button><button onclick="toggleDetails(false)">Collapse all</button><button onclick="scrollTo({top:0,behavior:'smooth'})">↑ Top</button></div>-->
+<div class="layout"><aside><h3>Pipeline Steps</h3><div class="nav"><a href="#step1">01 · Log In</a><a href="#step2">02 · Dashboard</a><a href="#step3">03 · New Project</a><a href="#step4">04 · Project Type</a><a href="#step5">05 · General</a><a href="#step6">06 · Build Triggers</a><a href="#step7">07 · Advanced Options</a><a href="#step8">08 · Pipeline</a><a href="#step9">09 · Save & Run</a><a href="#step10">10 · Monitor</a><a href="#step11">11 · Build Status</a></div></aside><main>
+<div class="hero"><h2>Overview</h2><p>A Jenkins CI/CD pipeline helps automate your build, test, and deployment process, so you can get changes from your code repository to your environment faster and with less manual work.</p><!--<div class="stats"><div class="stat"><b>11</b><small>Steps</small></div><div class="stat"><b>5</b><small>Sample stages</small></div><div class="stat"><b>Git</b><small>Source checkout</small></div><div class="stat"><b>Jenkinsfile</b><small>Pipeline definition</small></div></div>--></div>
+<section id="step1" class="step"><h2><span>STEP 01</span>Log In to Jenkins</h2><p>First, log in to Jenkins. This is where you’ll create, configure, and keep an eye on your jobs and pipelines.</p><figure><img src="images/j1_01.png" alt="Jenkins login"></figure></section><section id="step2" class="step"><h2><span>STEP 02</span>Redirected to the Jenkins Dashboard</h2><p>After you log in, Jenkins takes you to the dashboard. From here, you can manage your jobs, pipelines, and other settings.</p></section><section id="step3" class="step"><h2><span>STEP 03</span>Create a New Project</h2><p>From the Jenkins dashboard, click "New Item" to start creating a new project, then choose the project option you need.</p><figure><img src="images/j1_03.png" alt="New Item"></figure></section><section id="step4" class="step"><h2><span>STEP 04</span>Configure the Project Type</h2><p>On the next screen, you’ll see a few project options and a field for the pipeline name. Give your pipeline a clear name, select "Pipeline," and continue.</p><figure><img src="images/j1_04.png" alt="Project type"></figure></section><section id="step5" class="step"><h2><span>STEP 05</span>Configure the General Section</h2><p>The pipeline configuration page will open. In the General section, you can add the basic details for your pipeline:</p><ul><li>Add a short description so it’s easy to understand what the pipeline is for.</li><li>Set up the connection to your repository so Jenkins can access the project and trigger the pipeline.</li></ul><figure><img src="images/j1_05.png" alt="General configuration"></figure></section><section id="step6" class="step"><h2><span>STEP 06</span>Set Build Triggers</h2><p>In Build Triggers, choose the branch and repository you want Jenkins to use and add the required credentials. You can also add extra options if your project needs them.</p><figure><img src="images/j1_06.png" alt="Build triggers"></figure><p>If you want Jenkins to run the pipeline on a schedule, you can use cron syntax here.</p><img src="images/cron.png" alt="cron"></figure></section><section id="step7" class="step"><h2><span>STEP 07</span>Advanced Project Options</h2><p>This section is for advanced settings and special pipeline options. If you don’t need anything extra, you can simply leave it as it is.</p><figure><img src="images/j1_07.png" alt="Advanced project options"></figure></section><section id="step8" class="step"><h2><span>STEP 08</span>Configure the Pipeline Section</h2><p>This is where you tell Jenkins how to run your pipeline. In the Pipeline section:</p><ul><li>Add the Jenkinsfile that Jenkins will use to build, test, and deploy your application.</li><li>Choose where Jenkins should get the pipeline script from, such as your repository or a local file.</li><li>Add any required credentials or the path to your Jenkinsfile.</li></ul><figure><img src="images/j1_08.png" alt="Pipeline script"></figure><details open><summary>Sample Jenkins Pipeline Script</summary><div class="code"><button onclick="copyCode()">Copy</button><pre id="code">pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                // Example: checkout scm
+                cleanWs()
+            }
+        }
+
+        stage('Parallel Builds') {
+            parallel {
+                stage('Build 1') {
+                    steps {
+                        echo 'Running Build 1...'
+                    }
+                }
+                stage('Build 2') {
+                    steps {
+                        echo 'Running Build 2...'
+                    }
+                }
+                stage('Build 3') {
+                    steps {
+                        echo 'Running Build 3...'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Always: This runs regardless of the build outcome.'
+        }
+        changed {
+            echo 'Changed: This runs only if the current build status is different from the previous build.'
+        }
+        fixed {
+            echo 'Fixed: This runs if the current build is successful and the previous build failed or was unstable.'
+        }
+        regression {
+            echo 'Regression: This runs if the current build failed, was unstable, or aborted, while the previous build was successful.'
+        }
+        aborted {
+            echo 'Aborted: This runs if the build was manually stopped or timed out.'
+        }
+        failure {
+            echo 'Failure: This runs if the build step or overall pipeline status is failed.'
+        }
+        success {
+            echo 'Success: This runs if the pipeline completes successfully.'
+        }
+        unstable {
+            echo 'Unstable: This runs if test failures or other issues mark the build as unstable.'
+        }
+        unsuccessful {
+            echo 'Unsuccessful: This runs if the build is not successful (captures failure, aborted, and unstable states).'
+        }
+        cleanup {
+            echo 'Cleanup: This runs after all other post conditions have executed, regardless of the outcome.'
+        }
+    }
+}
+</pre></div></details></section><section id="step9" class="step"><h2><span>STEP 09</span>Save the Pipeline and Run It</h2><p>Once your pipeline is ready, click Save. Jenkins will take you back to the project dashboard. Click "Build Now" to run it and check the result using Stage View or Console Output.</p><figure><img src="images/j1_09.png" alt="Build Now"></figure></section><section id="step10" class="step"><h2><span>STEP 10</span>Monitor the Pipeline Execution</h2><p>Once the pipeline starts, you can watch it as it runs. Open your project from the Jenkins dashboard, then select the build you just started under Build History.</p><ul><li><strong>Stage View:</strong> Shows each pipeline stage visually, so you can quickly see what’s running, completed, or failed.</li><li><strong>Console Output:</strong> Shows the detailed logs from each stage and is especially useful when you need to troubleshoot an issue.</li></ul><figure><img src="images/j1_10.png" alt="Stage View"></figure></section><section id="step11" class="step"><h2><span>STEP 11</span>Review the Build Status</h2><p>At the bottom of the Console Output or Stage View, you’ll see how the pipeline finished:</p><ul><li><strong>Success:</strong> If everything runs without errors, you’ll see "Finished: Success."</li><li><strong>Failure:</strong> If a stage fails, the logs will show the error details, which makes it easier to find and fix the problem.</li></ul><figure><img src="images/j1_11a.png" alt="Console output"><img src="images/j1_11b.png" alt="Console output 2"></figure></section>
+<div class="finish"><strong>That’s it! You’ve successfully created a Jenkins CI/CD pipeline.</strong></div>
+</main></div>
+<div id="zoom"><button onclick="closeZoom()">Close ✕</button><img id="zoomImg"></div>
+<script>
+const steps=[...document.querySelectorAll('.step')],links=[...document.querySelectorAll('.nav a')];
+document.getElementById('search').oninput=e=>{let q=e.target.value.toLowerCase();steps.forEach(s=>s.classList.toggle('hidden',q&&!s.innerText.toLowerCase().includes(q)))};
+addEventListener('scroll',()=>{let max=document.documentElement.scrollHeight-innerHeight;document.getElementById('bar').style.width=(max?scrollY/max*100:0)+'%';let cur='';steps.forEach(s=>{if(scrollY>=s.offsetTop-120)cur=s.id});links.forEach(a=>a.classList.toggle('active',a.hash==='#'+cur))});
+function toggleDetails(v){document.querySelectorAll('details').forEach(d=>d.open=v)}
+function copyCode(){navigator.clipboard.writeText(document.getElementById('code').innerText);event.target.textContent='Copied!';setTimeout(()=>event.target.textContent='Copy',1000)}
+document.querySelectorAll('figure img').forEach(img=>img.onclick=()=>{document.getElementById('zoomImg').src=img.src;document.getElementById('zoom').classList.add('show')});
+function closeZoom(){document.getElementById('zoom').classList.remove('show')}
+</script></body></html>
